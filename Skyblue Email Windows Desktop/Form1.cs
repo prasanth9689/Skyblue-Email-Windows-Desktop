@@ -3,18 +3,17 @@ using System.Text.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace Skyblue_Email_Windows_Desktop
 {
     public partial class Form1 : Form
     {
-
-
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
-
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HTCAPTION = 0x2;
 
@@ -26,22 +25,19 @@ namespace Skyblue_Email_Windows_Desktop
             this.TopLevel = true;
             this.TopMost = false;
             this.ShowInTaskbar = true;
-
-            //this.StartPosition = FormStartPosition.CenterScreen;
             this.WindowState = FormWindowState.Normal;
             this.Visible = true;
-
 
             this.WindowState = FormWindowState.Maximized;
             Panel titleBar = new Panel();
             titleBar.Dock = DockStyle.Top;
             titleBar.Height = 50;
-            titleBar.BackColor = Color.FromArgb(224, 224, 224); // dark theme
+            titleBar.BackColor = Color.FromArgb(224, 224, 224); 
             titleBar.MouseDown += TitleBar_MouseDown;
             this.Controls.Add(titleBar);
 
             Button btnClose = new Button();
-            btnClose.Text = "✕"; // or "X"
+            btnClose.Text = "✕"; 
             btnClose.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             btnClose.ForeColor = Color.White;
             btnClose.BackColor = Color.FromArgb(41, 113, 252);
@@ -54,7 +50,7 @@ namespace Skyblue_Email_Windows_Desktop
             titleBar.Controls.Add(btnClose);
 
             Button btnMinimize = new Button();
-            btnMinimize.Text = "―"; // or "_"
+            btnMinimize.Text = "―"; 
             btnMinimize.Font = new Font("Segoe UI", 10, FontStyle.Bold);
             btnMinimize.ForeColor = Color.White;
             btnMinimize.BackColor = Color.FromArgb(41, 113, 252);
@@ -84,23 +80,25 @@ namespace Skyblue_Email_Windows_Desktop
             // To get screen width and height
             int workWidth = Screen.PrimaryScreen.WorkingArea.Width;
             int workHeight = Screen.PrimaryScreen.WorkingArea.Height;
-
             Console.WriteLine($"Working Area Width: {workWidth}, Height: {workHeight}");
 
             textBox1.Left = (workHeight - textBox1.Width) / 2;
             textBox2.Left = (workHeight - textBox2.Width) / 2;
             button1.Left = (workHeight - button1.Width) / 2;
             pictureBox1.Left = (workHeight - pictureBox1.Width) / 2;
+            label1.Left = (workHeight - label1.Width) / 2;
 
             textBox1.Top = (workHeight - textBox1.Height) / 2;
             textBox2.Top = (workHeight + 150 - textBox2.Height) / 2;
             button1.Top = (workHeight + 300 - button1.Height) / 2;
             pictureBox1.Top = (workHeight - pictureBox1.Height) / 2;
+            label1.Top = (workHeight-300 - label1.Height) / 2;
 
             // To hide split container center line and disable the splitter appearance and movement.
-            splitContainer1.SplitterWidth = 1; // Reduce the thickness
-            splitContainer1.IsSplitterFixed = true; // Prevent dragging
+            splitContainer1.SplitterWidth = 1; 
+            splitContainer1.IsSplitterFixed = true;
             splitContainer1.BackColor = splitContainer1.Panel1.BackColor; // Match background
+
 
         }
 
@@ -155,12 +153,12 @@ namespace Skyblue_Email_Windows_Desktop
                 return;
             }
 
-            if (!IsValidEmail(textBox1.Text))
-            {
-                MessageBox.Show("Please enter a valid email address.");
-                textBox1.Focus();
-                return;
-            }
+            //if (!IsValidEmail(textBox1.Text))
+            //{
+            //    MessageBox.Show("Please enter a valid email address.");
+            //    textBox1.Focus();
+            //    return;
+            //}
 
             if (string.IsNullOrWhiteSpace(textBox2.Text))
             {
@@ -174,23 +172,31 @@ namespace Skyblue_Email_Windows_Desktop
 
         private async void login()
         {
-            MessageBox.Show("Please wait login");
+            button1.Text = "Login... Please wait.";
+            button1.BackColor = Color.Gray;
+            button1.Enabled = false;
+            //    MessageBox.Show("Please wait login");
             await PostDataAsync();
         }
 
         public class MyData
         {
-            public string Acc { get; set; }
-            public int Age { get; set; }
+            public string acc { get; set; }
+            public string email { get; set; }
+            public string password { get; set; }
+            public string status { get; set; }
         }
 
 
         private async Task PostDataAsync()
         {
+            string mEmail = textBox1.Text;
+            string mPassword = textBox2.Text;
             var data = new MyData
             {
-                Acc = "login",
-                Age = 30
+                acc = "user_login",
+                email = mEmail,
+                password = mPassword
             };
 
             using (HttpClient client = new HttpClient())
@@ -203,15 +209,51 @@ namespace Skyblue_Email_Windows_Desktop
                 if (response.IsSuccessStatusCode)
                 {
                     string responseContent = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show("Success! Response: " + responseContent);
+                  //  MessageBox.Show("Success! Response: " + responseContent);
+
+                    MyData myData = JsonSerializer.Deserialize<MyData>(responseContent);
+
+                    JObject obj = JObject.Parse(responseContent);
+
+                    if (obj["0"]?["status"] != null)
+                    {
+                        string nestedStatus = obj["0"]["status"].ToString();
+
+                        if (nestedStatus.Equals("1")) {
+                            Home home = new Home();
+                            home.Show();
+                            this.Hide();
+                        }
+
+                        if (nestedStatus.Equals("2")) {
+                            MessageBox.Show("Check username and password!");
+                            enableLoginBtn();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error login. try again. ");
+                        enableLoginBtn();
+                    }
+
+                    //string tempPath = Path.Combine(Path.GetTempPath(), "tempNote.txt");
+                    //File.WriteAllText(tempPath, responseContent); // Save textbox content
+                    //Process.Start("notepad.exe", tempPath);     // Open in Notepad
                 }
                 else
                 {
                     MessageBox.Show("Error: " + response.StatusCode);
+                    enableLoginBtn();
                 }
             }
         }
 
+        private void enableLoginBtn()
+        {
+            button1.BackColor = AppColors.Primary;
+            button1.Text = "CONTINUE";
+            button1.Enabled = true;
+        }
 
         private bool IsValidEmail(string email)
         {
