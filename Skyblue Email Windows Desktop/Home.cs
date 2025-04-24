@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Skyblue_Email_Windows_Desktop.Properties;
 
 namespace Skyblue_Email_Windows_Desktop
 {
@@ -61,9 +62,10 @@ namespace Skyblue_Email_Windows_Desktop
             button2.FlatAppearance.BorderSize = 0;
             button2.Click += btnHome_Click;
 
-            Image originalImage2 = Properties.Resources.inbox;
-            Image resizedImage2 = new Bitmap(originalImage, new Size(30, 30));
-            button3.Image = resizedImage;
+            
+            Image sentImage = Properties.Resources.ic_sent;
+            Image resizedSendImage = new Bitmap(sentImage, new Size(30, 30));
+            button3.Image = resizedSendImage;
             button3.TextImageRelation = TextImageRelation.ImageBeforeText;
             button3.ImageAlign = ContentAlignment.MiddleLeft;
             button3.Padding = new Padding(20, 0, 8, 0);
@@ -71,8 +73,8 @@ namespace Skyblue_Email_Windows_Desktop
             button3.Click += btnHome_Click;
             button3.FlatAppearance.BorderSize = 0;
 
-            Image originalImage4 = Properties.Resources.inbox;
-            Image resizedImage4 = new Bitmap(originalImage, new Size(30, 30));
+            Image draftImage = Properties.Resources.ic_draft;
+            Image resizedDraftImage = new Bitmap(draftImage, new Size(30, 30));
             button4.Image = resizedImage;
             button4.TextImageRelation = TextImageRelation.ImageBeforeText;
             button4.ImageAlign = ContentAlignment.MiddleLeft;

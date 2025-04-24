@@ -32,6 +32,7 @@
             pictureBox1 = new PictureBox();
             label1 = new Label();
             panel1 = new Panel();
+            button10 = new Button();
             button9 = new Button();
             button8 = new Button();
             button7 = new Button();
@@ -41,7 +42,6 @@
             button3 = new Button();
             button2 = new Button();
             button1 = new Button();
-            button10 = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -83,6 +83,17 @@
             panel1.Size = new Size(277, 526);
             panel1.TabIndex = 2;
             panel1.Paint += panel1_Paint;
+            // 
+            // button10
+            // 
+            button10.FlatStyle = FlatStyle.Flat;
+            button10.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            button10.Location = new Point(3, 483);
+            button10.Name = "button10";
+            button10.Size = new Size(254, 53);
+            button10.TabIndex = 12;
+            button10.Text = "   Logout";
+            button10.UseVisualStyleBackColor = true;
             // 
             // button9
             // 
@@ -184,17 +195,6 @@
             button1.TabIndex = 3;
             button1.Text = "Compose Mail";
             button1.UseVisualStyleBackColor = false;
-            // 
-            // button10
-            // 
-            button10.FlatStyle = FlatStyle.Flat;
-            button10.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            button10.Location = new Point(3, 483);
-            button10.Name = "button10";
-            button10.Size = new Size(254, 53);
-            button10.TabIndex = 12;
-            button10.Text = "   Logout";
-            button10.UseVisualStyleBackColor = true;
             // 
             // Home
             // 

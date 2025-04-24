@@ -31,10 +31,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             splitContainer1 = new SplitContainer();
             pictureBox1 = new PictureBox();
+            label1 = new Label();
             textBox2 = new TextBox();
             textBox1 = new TextBox();
             button1 = new Button();
-            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -73,6 +73,16 @@
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 30F, FontStyle.Bold);
+            label1.Location = new Point(241, 118);
+            label1.Name = "label1";
+            label1.Size = new Size(193, 81);
+            label1.TabIndex = 3;
+            label1.Text = "Login";
+            // 
             // textBox2
             // 
             textBox2.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -109,16 +119,6 @@
             button1.Text = "CONTINUE";
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 30F, FontStyle.Bold);
-            label1.Location = new Point(241, 118);
-            label1.Name = "label1";
-            label1.Size = new Size(193, 81);
-            label1.TabIndex = 3;
-            label1.Text = "Login";
             // 
             // Form1
             // 
