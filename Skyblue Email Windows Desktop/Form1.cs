@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Skyblue_Email_Windows_Desktop
 {
@@ -17,9 +18,18 @@ namespace Skyblue_Email_Windows_Desktop
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HTCAPTION = 0x2;
 
+
         public Form1()
         {
+
+           
+          //  MessageBox.Show("llll");
+          
             InitializeComponent();
+
+           
+
+
             this.FormBorderStyle = FormBorderStyle.None;
             this.MaximizedBounds = Screen.GetWorkingArea(this);
             this.TopLevel = true;
@@ -100,7 +110,10 @@ namespace Skyblue_Email_Windows_Desktop
             splitContainer1.BackColor = splitContainer1.Panel1.BackColor; // Match background
 
 
+           
+
         }
+
 
         private void TitleBar_MouseDown(object sender, MouseEventArgs e)
         {
@@ -218,8 +231,9 @@ namespace Skyblue_Email_Windows_Desktop
                     if (obj["0"]?["status"] != null)
                     {
                         string nestedStatus = obj["0"]["status"].ToString();
-
                         if (nestedStatus.Equals("1")) {
+
+                            UserSession.Instance.StartSession(mEmail, mPassword);
                             Home home = new Home();
                             home.Show();
                             this.Hide();

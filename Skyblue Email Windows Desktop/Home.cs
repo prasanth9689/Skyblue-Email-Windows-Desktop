@@ -8,24 +8,59 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MaterialSkin.Controls;
+using Org.BouncyCastle.Asn1.X509;
 using Skyblue_Email_Windows_Desktop.Properties;
 
 namespace Skyblue_Email_Windows_Desktop
 {
     public partial class Home : Form
     {
-        //  Panel sidePanel = new Panel();
         Panel contentPanel = new Panel();
 
+        static bool isLoggedIn = false;
+        static DateTime loginTime;
+        static int sessionTimeoutMinutes = 2;
 
         public Home()
         {
             InitializeComponent();
 
+
+
             this.WindowState = FormWindowState.Maximized;
             createLeftNav();
-
             autoSizeLayout();
+            setupSearchLayout();
+            
+        }
+
+        private void setupSearchLayout()
+        {
+            panel2.Location = new Point(this.ClientSize.Width - panel2.Width, 20);
+
+            // Optional: keep it there when form resizes
+            this.Resize += (s, e) =>
+            {
+                panel2.Location = new Point(this.ClientSize.Width - panel2.Width, 0);
+            };
+        }
+
+        private void loadHome()
+        {
+            contentPanel.Controls.Clear();
+            var homeControl = new HomeControl();
+
+            homeControl.Size = new Size(267, this.ClientSize.Height);
+            this.Resize += (s, e) =>
+            {
+                homeControl.Height = this.ClientSize.Height;
+            };
+
+            //     homeControl.Width = this.ClientSize.Width;
+            int screenWidth = Screen.FromControl(this).WorkingArea.Width;
+            homeControl.Width = screenWidth - 300;
+            contentPanel.Controls.Add(homeControl);
         }
 
         private void autoSizeLayout()
@@ -42,12 +77,14 @@ namespace Skyblue_Email_Windows_Desktop
         {
             addLeftNavButtons();
             loadContentPanel();
+
         }
 
         private void loadContentPanel()
         {
             contentPanel.Dock = DockStyle.Fill;
             this.Controls.Add(contentPanel);
+           
         }
 
         private void addLeftNavButtons()
@@ -70,12 +107,12 @@ namespace Skyblue_Email_Windows_Desktop
             button3.ImageAlign = ContentAlignment.MiddleLeft;
             button3.Padding = new Padding(20, 0, 8, 0);
             button3.FlatAppearance.BorderSize = 0;
-            button3.Click += btnHome_Click;
+            button3.Click += btnSent_Click;
             button3.FlatAppearance.BorderSize = 0;
 
             Image draftImage = Properties.Resources.ic_draft;
             Image resizedDraftImage = new Bitmap(draftImage, new Size(30, 30));
-            button4.Image = resizedImage;
+            button4.Image = resizedDraftImage;
             button4.TextImageRelation = TextImageRelation.ImageBeforeText;
             button4.ImageAlign = ContentAlignment.MiddleLeft;
             button4.Padding = new Padding(20, 0, 8, 0);
@@ -83,9 +120,9 @@ namespace Skyblue_Email_Windows_Desktop
             button4.Click += btnHome_Click;
             button4.FlatAppearance.BorderSize = 0;
 
-            Image originalImage5 = Properties.Resources.inbox;
-            Image resizedImage5 = new Bitmap(originalImage, new Size(30, 30));
-            button5.Image = resizedImage;
+            Image importantImage = Properties.Resources.ic_important;
+            Image resizedimportantImage = new Bitmap(importantImage, new Size(30, 30));
+            button5.Image = resizedimportantImage;
             button5.TextImageRelation = TextImageRelation.ImageBeforeText;
             button5.ImageAlign = ContentAlignment.MiddleLeft;
             button5.Padding = new Padding(20, 0, 8, 0);
@@ -93,9 +130,9 @@ namespace Skyblue_Email_Windows_Desktop
             button5.Click += btnHome_Click;
             button5.FlatAppearance.BorderSize = 0;
 
-            Image originalImage6 = Properties.Resources.inbox;
-            Image resizedImage6 = new Bitmap(originalImage, new Size(30, 30));
-            button6.Image = resizedImage;
+            Image spamImage = Properties.Resources.ic_spam;
+            Image resizedSpamImage = new Bitmap(spamImage, new Size(30, 30));
+            button6.Image = resizedSpamImage;
             button6.TextImageRelation = TextImageRelation.ImageBeforeText;
             button6.ImageAlign = ContentAlignment.MiddleLeft;
             button6.Padding = new Padding(20, 0, 8, 0);
@@ -103,9 +140,9 @@ namespace Skyblue_Email_Windows_Desktop
             button6.Click += btnHome_Click;
             button6.FlatAppearance.BorderSize = 0;
 
-            Image originalImage7 = Properties.Resources.inbox;
-            Image resizedImage7 = new Bitmap(originalImage, new Size(30, 30));
-            button7.Image = resizedImage;
+            Image trashImage = Properties.Resources.ic_trash;
+            Image resizedtrashImage = new Bitmap(trashImage, new Size(30, 30));
+            button7.Image = resizedtrashImage;
             button7.TextImageRelation = TextImageRelation.ImageBeforeText;
             button7.ImageAlign = ContentAlignment.MiddleLeft;
             button7.Padding = new Padding(20, 0, 8, 0);
@@ -113,9 +150,9 @@ namespace Skyblue_Email_Windows_Desktop
             button7.Click += btnHome_Click;
             button7.FlatAppearance.BorderSize = 0;
 
-            Image originalImage8 = Properties.Resources.inbox;
-            Image resizedImage8 = new Bitmap(originalImage, new Size(30, 30));
-            button8.Image = resizedImage;
+            Image calendarImage = Properties.Resources.ic_calendar;
+            Image resizedcalendarImage = new Bitmap(calendarImage, new Size(30, 30));
+            button8.Image = resizedcalendarImage;
             button8.TextImageRelation = TextImageRelation.ImageBeforeText;
             button8.ImageAlign = ContentAlignment.MiddleLeft;
             button8.Padding = new Padding(20, 0, 8, 0);
@@ -123,9 +160,9 @@ namespace Skyblue_Email_Windows_Desktop
             button8.Click += btnHome_Click;
             button8.FlatAppearance.BorderSize = 0;
 
-            Image originalImage9 = Properties.Resources.inbox;
-            Image resizedImage9 = new Bitmap(originalImage, new Size(30, 30));
-            button9.Image = resizedImage;
+            Image settingsImage = Properties.Resources.ic_settings;
+            Image resizedsettingsImage = new Bitmap(settingsImage, new Size(30, 30));
+            button9.Image = resizedsettingsImage;
             button9.TextImageRelation = TextImageRelation.ImageBeforeText;
             button9.ImageAlign = ContentAlignment.MiddleLeft;
             button9.Padding = new Padding(20, 0, 8, 0);
@@ -133,37 +170,62 @@ namespace Skyblue_Email_Windows_Desktop
             button9.Click += btnHome_Click;
             button9.FlatAppearance.BorderSize = 0;
 
-            Image originalImage10 = Properties.Resources.inbox;
-            Image resizedImage10 = new Bitmap(originalImage, new Size(30, 30));
-            button10.Image = resizedImage;
+            Image logoutImage = Properties.Resources.ic_logout;
+            Image resizedlogoutImage = new Bitmap(logoutImage, new Size(30, 30));
+            button10.Image = resizedlogoutImage;
             button10.TextImageRelation = TextImageRelation.ImageBeforeText;
             button10.ImageAlign = ContentAlignment.MiddleLeft;
             button10.Padding = new Padding(20, 0, 8, 0);
             button10.FlatAppearance.BorderSize = 0;
-            button10.Click += btnHome_Click;
+            button10.Click += btnLogout_Click;
             button10.FlatAppearance.BorderSize = 0;
 
+            loadHome();
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            UserSession.Instance.EndSession();
+
+            Form1 form1 = new Form1();
+            form1.Show();
+            this.Hide();
         }
 
         private void btnHome_Click(object sender, EventArgs e)
         {
-            contentPanel.Controls.Clear();
-            var homeControl = new HomeControl();
+            loadHome();
 
-            homeControl.Size = new Size(267, this.ClientSize.Height);
+            //contentPanel.Controls.Clear();
+            //var homeControl = new HomeControl();
+
+            //homeControl.Size = new Size(267, this.ClientSize.Height);
+            //this.Resize += (s, e) =>
+            //{
+            //    homeControl.Height = this.ClientSize.Height;
+            //};
+
+            //homeControl.Width = this.ClientSize.Width;
+            //contentPanel.Controls.Add(homeControl);
+        }
+
+        private void btnSent_Click(object sender, EventArgs e)
+        {
+            contentPanel.Controls.Clear();
+            var sentControl = new SentControl();
+
+            sentControl.Location = new Point(300, 100);
+
+            sentControl.Size = new Size(267, this.ClientSize.Height);
             this.Resize += (s, e) =>
             {
-                homeControl.Height = this.ClientSize.Height;
+                sentControl.Height = this.ClientSize.Height;
             };
 
-            homeControl.Width = this.ClientSize.Width;
-            contentPanel.Controls.Add(homeControl);
+            sentControl.Width = this.ClientSize.Width;
+            contentPanel.Controls.Add(sentControl);
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
 
         private void Home_Load(object sender, EventArgs e)
         {
@@ -189,76 +251,3 @@ namespace Skyblue_Email_Windows_Desktop
     }
 }
 
-//Button btnSend = new Button();
-//btnSend.Text = "Send";
-//btnSend.Dock = DockStyle.Top;
-//btnSend.Height = 50;
-//btnSend.FlatStyle = FlatStyle.Flat;
-//btnSend.ForeColor = Color.Black;
-//btnSend.FlatAppearance.BorderSize = 0;
-
-//Button btnDraft = new Button();
-//btnDraft.Text = "Draft";
-//btnDraft.Dock = DockStyle.Top;
-//btnDraft.Height = 50;
-//btnDraft.FlatStyle = FlatStyle.Flat;
-//btnDraft.ForeColor = Color.Black;
-//btnDraft.FlatAppearance.BorderSize = 0;
-
-//Button btnImportant = new Button();
-//btnImportant.Text = "Important";
-//btnImportant.Dock = DockStyle.Top;
-//btnImportant.Height = 50;
-//btnImportant.FlatStyle = FlatStyle.Flat;
-//btnImportant.ForeColor = Color.Black;
-//btnImportant.FlatAppearance.BorderSize = 0;
-
-//Button btnSpam = new Button();
-//btnSpam.Text = "Spam";
-//btnSpam.Dock = DockStyle.Top;
-//btnSpam.Height = 50;
-//btnSpam.FlatStyle = FlatStyle.Flat;
-//btnSpam.ForeColor = Color.Black;
-//btnSpam.FlatAppearance.BorderSize = 0;
-
-//Button btnTrash = new Button();
-//btnTrash.Text = "Trash";
-//btnTrash.Dock = DockStyle.Top;
-//btnTrash.Height = 50;
-//btnTrash.FlatStyle = FlatStyle.Flat;
-//btnTrash.ForeColor = Color.Black;
-//btnTrash.FlatAppearance.BorderSize = 0;
-
-//Button btnCalenar = new Button();
-//btnCalenar.Text = "Calenar";
-//btnCalenar.Dock = DockStyle.Top;
-//btnCalenar.Height = 50;
-//btnCalenar.FlatStyle = FlatStyle.Flat;
-//btnCalenar.ForeColor = Color.Black;
-//btnCalenar.FlatAppearance.BorderSize = 0;
-
-//Button btnSettings = new Button();
-//btnSettings.Text = "Settings";
-//btnSettings.Dock = DockStyle.Top;
-//btnSettings.Height = 50;
-//btnSettings.FlatStyle = FlatStyle.Flat;
-//btnSettings.ForeColor = Color.Black;
-//btnSettings.FlatAppearance.BorderSize = 0;
-
-//Button btnLogout = new Button();
-//btnLogout.Text = "Logout";
-//btnLogout.Dock = DockStyle.Top;
-//btnLogout.Height = 50;
-//btnLogout.FlatStyle = FlatStyle.Flat;
-//btnLogout.ForeColor = Color.Black;
-//btnLogout.FlatAppearance.BorderSize = 0;
-
-//panel1.Controls.Add(btnLogout);
-//panel1.Controls.Add(btnSettings);
-//panel1.Controls.Add(btnCalenar);
-//panel1.Controls.Add(btnTrash);
-//panel1.Controls.Add(btnSpam);
-//panel1.Controls.Add(btnImportant);
-//panel1.Controls.Add(btnDraft);
-//panel1.Controls.Add(btnSend);
-//panel1.Controls.Add(btnInbox);

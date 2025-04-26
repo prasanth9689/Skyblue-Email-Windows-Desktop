@@ -42,8 +42,12 @@
             button3 = new Button();
             button2 = new Button();
             button1 = new Button();
+            textBox1 = new TextBox();
+            panel2 = new Panel();
+            button11 = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel1.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // pictureBox1
@@ -82,7 +86,6 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(277, 526);
             panel1.TabIndex = 2;
-            panel1.Paint += panel1_Paint;
             // 
             // button10
             // 
@@ -196,12 +199,46 @@
             button1.Text = "Compose Mail";
             button1.UseVisualStyleBackColor = false;
             // 
+            // textBox1
+            // 
+            textBox1.Font = new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            textBox1.Location = new Point(6, 6);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.PlaceholderText = "  Search email";
+            textBox1.Size = new Size(373, 55);
+            textBox1.TabIndex = 4;
+            // 
+            // panel2
+            // 
+            panel2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            panel2.Controls.Add(button11);
+            panel2.Controls.Add(textBox1);
+            panel2.Location = new Point(743, 29);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(559, 66);
+            panel2.TabIndex = 5;
+            // 
+            // button11
+            // 
+            button11.BackColor = Color.FromArgb(41, 113, 252);
+            button11.FlatStyle = FlatStyle.Flat;
+            button11.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            button11.ForeColor = Color.White;
+            button11.Location = new Point(385, 6);
+            button11.Name = "button11";
+            button11.Size = new Size(168, 53);
+            button11.TabIndex = 6;
+            button11.Text = "Search";
+            button11.UseVisualStyleBackColor = false;
+            // 
             // Home
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(1351, 653);
+            Controls.Add(panel2);
             Controls.Add(button1);
             Controls.Add(panel1);
             Controls.Add(label1);
@@ -212,6 +249,8 @@
             Load += Home_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel1.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -231,5 +270,8 @@
         private Button button8;
         private Button button9;
         private Button button10;
+        private TextBox textBox1;
+        private Panel panel2;
+        private Button button11;
     }
 }

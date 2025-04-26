@@ -104,7 +104,7 @@
             textBox1.PlaceholderText = "Enter email";
             textBox1.Size = new Size(342, 55);
             textBox1.TabIndex = 1;
-            textBox1.Text = "prasanth@skyblue.co.in";
+            textBox1.Text = "prasanth";
             // 
             // button1
             // 
